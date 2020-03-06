@@ -10,10 +10,10 @@ const questions = [
     {
         name: `name`,
         type: `input`,
-        message: `What is your full name?`,
+        message: `What is your first and last name?`,
         validate: async input => {
             if (input === null || input === ` ` || input === `  ` || input === `   ` || input.length < 3) {
-               return `A name is required (min. 3 characters)`
+               return `A minimum of `
             }
             return true
          }
@@ -87,48 +87,51 @@ const questions = [
 const askUser = () => {
     return inquirer.prompt(questions)
 }
-const generateREADME = (a, gitPhotoURL, gitEmail, gitMainURL) => {
-    if (gitEmail === undefined || gitEmail === null) {
+
+const generateREADME = (data) => {
+    console.log("data:", data)
+    if (data.email === undefined || data.email === null) {
         gitEmail = `[no email found]`
     }
-    if (a.installation === undefined) {
-        a.installation = `[Enter installation information here]`
+    if (data.installation === undefined) {
+        data.installation = `[Enter installation information here]`
     }
-    if (a.description === undefined) {
-        a.description = `[Enter project description here]`
+    if (data.description === undefined) {
+        data.description = `[Enter project description here]`
     }
-    if (a.usage === undefined) {
-        a.usage = `[Enter how project is to be used here]`
+    if (data.usage === undefined) {
+        data.usage = `[Enter how project is to be used here]`
     }
-    if (a.contributing === undefined) {
-        a.contributing = `[Enter other contributors here]`
+    if (data.contributing === undefined) {
+        data.contributing = `[Enter other contributors here]`
     }
-    if (a.license === undefined) {
-        a.license = `[Enter licenses used here]`
+    if (data.license === undefined) {
+        data.license = `[Enter licenses used here]`
     }
 
-    let socialBadge = `https://img.shields.io/github/followers/${a.githubName}?style=social`
-    return `# ${a.title}
+    let socialBadge = `https://img.shields.io/github/followers/${data.login}?style=social`
+    return `# ${data.title}
     
-A Project by: ${a.name} (GitHub: @${a.githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
-[![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
-My email address: ${gitEmail}
+A Project by: ${data.name} (GitHub: @${data.login}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
+[![GitHub Avatar](${data.avatar_url})](${gitMainURL})
+1. My email address: ${data.email}
+2. Location: ${data.location}
 ### Description
-* ${a.description}
+* ${data.description}
 ### Installation
-* ${a.installation}
+* ${data.installation}
 ### Usage
-* ${a.usage}
+* ${data.usage}
 ### License
-* ${a.license}
+* ${data.license}
 Contributors
-* ${a.name} and ${a.contributing}
+* ${data.name} and ${data.contributing}
 `
 }
 
 async function renderNewFile() {
     try {
-        let filename = `./generated-files/README-` + moment().format(`YYYYMMDDhhmmss`) + `.md`
+        let filename = `generated-files/README-` + moment().format(`YYYYMMDDhhmmss`) + `.md`
         let gitPhotoURL, gitEmail, gitMainURL
 
         const answers = await askUser()             // waiting for inquirer prompt to gather all answers from user
@@ -138,20 +141,14 @@ async function renderNewFile() {
 
         // waiting for an axios call to get GitHub user information before we continue
         await axios.get(userURL).then(res => {
-            // console.log(res.data)
+
+            console.log(res.data)
             gitPhotoURL = res.data.avatar_url       // saving profile avatar url to variable
             gitEmail = res.data.email               // saving user's email to variable
             gitMainURL = res.data.html_url          // saving user's github url to variable
         })
-        // waiting for an axios call to get GitHub user repos data
-        // await axios.get(repoURL).then(res => {
-        //     console.log(res.data)
-        //       for(i of res.data){
 
-        //       }
-        // })
-
-        const readmeText = generateREADME(answers, gitPhotoURL, gitEmail, gitMainURL)         // send answers obj to generateREADME function to parse 
+        const readmeText = generateREADME(...answers, ...res.data)         // send answers obj to generateREADME function to parse 
         await writeFileSync(filename, readmeText)                                 // create README.md file (timestamped) with README template
         
         console.log(`Thank you ~ File created (${filename}).`)
