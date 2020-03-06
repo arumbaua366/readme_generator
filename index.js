@@ -1,8 +1,8 @@
+const inquirer = require(`inquirer`)
+const axios = require(`axios`)
 const fs = require(`fs`)
 const util = require(`util`)
-const inquirer = require(`inquirer`)
 const moment = require(`moment`)
-const axios = require(`axios`)
 
 const writeFileSync = util.promisify(fs.writeFile)
 
@@ -88,10 +88,10 @@ const askUser = () => {
     return inquirer.prompt(questions)
 }
 
-const generateREADME = (data) => {
+const readME = (data) => {
     console.log("data:", data)
     if (data.email === undefined || data.email === null) {
-        gitEmail = `[no email found]`
+        data.email = `[no email found]`
     }
     if (data.installation === undefined) {
         data.installation = `[Enter installation information here]`
@@ -162,7 +162,7 @@ renderNewFile()
 
 module.exports = {
     askUser: askUser,
-    generateREADME: generateREADME,
+    readME: readME,
     questions:questions,
 
 }
