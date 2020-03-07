@@ -12,10 +12,10 @@ const questions = [
         type: `input`,
         message: `What is your first and last name?`,
         validate: async input => {
-            if (input === null || input === ` ` || input === `  ` || input === `   ` || input.length < 3) {
-               return `A minimum of `
+            if (input === null || input === `    ` || input.length < 4) {
+               return `You must enter your first and last name.`
             }
-            return true
+            return true;
          }
     },
     {
@@ -26,7 +26,7 @@ const questions = [
             if (input === null || input === ` ` || input === `  ` || input.length < 2) {
                return `You must enter at a GitHub username (minimum 2 characters).`
             }
-            return true
+            return true;
          }
     },
     {
@@ -109,11 +109,12 @@ const readME = (data) => {
         data.license = `[Enter licenses used here]`
     }
 
-    let socialBadge = `https://img.shields.io/github/followers/${data.login}?style=social`
+    let shieldsBadge = `https://img.shields.io/github/followers/${data.login}?style=social`
     return `# ${data.title}
     
-Project Title: ${data.name} (GitHub: @${data.login}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
-[![GitHub Avatar](${data.avatar_url})](${gitMainURL})
+Project Title: ${data.name} 
+GitHub: @${data.login}) [![User Followers](${shieldsBadge})](${gitURL+`?tab=followers`})
+[![GitHub Avatar](${data.avatar_url})](${gitURL})
 1. My email address: ${data.email}
 2. Location: ${data.location}
 ### Description
@@ -132,7 +133,6 @@ Contributors
 async function renderNewFile() {
     try {
         let filename = `githubgen_files/README-` + moment().format(`YYYYMMDDhhmmss`) + `.md`
-        let gitPhotoURL, gitEmail, gitMainURL
 
         const answers = await user()
 
@@ -145,10 +145,10 @@ async function renderNewFile() {
             console.log(res.data)
             gitEmail = res.data.email
             gitURL = res.data.html_url
-            gitAvatar = res.data.avatar_url
+            gitAvatarURL = res.data.avatar_url
         })
 
-        const readmeText = generateREADME(...answers, ...res.data)          
+        const readmeText = readME(...answers, ...res.data)          
         await writeFileSync(filename, readmeText)
         
         console.log(`File created: (${filename}).`)
