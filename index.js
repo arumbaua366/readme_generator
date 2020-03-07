@@ -23,8 +23,8 @@ const questions = [
         type: `input`,
         message: `Please enter your GitHub username:`,
         validate: async input => {
-            if (input === null || input === ` ` || input === `  ` || input === `   ` || input.length < 3) {
-               return `must make an entry to continue (min. 3 characters)`
+            if (input === null || input === ` ` || input === `  ` || input.length < 2) {
+               return `You must enter at a GitHub username (minimum 2 characters).`
             }
             return true
          }
@@ -32,8 +32,8 @@ const questions = [
     {
         name: `title`,
         type: `input`,
-        message: `What is the name of your project?`,
-        default: `Untitled`,
+        message: `Please provide the title of your project:`,
+        default: `N/A`,
     },
     {
         name: `description`,
@@ -84,7 +84,7 @@ const questions = [
         default: `N/A`,
     },
 ]
-const askUser = () => {
+const user = () => {
     return inquirer.prompt(questions)
 }
 
@@ -112,7 +112,7 @@ const readME = (data) => {
     let socialBadge = `https://img.shields.io/github/followers/${data.login}?style=social`
     return `# ${data.title}
     
-A Project by: ${data.name} (GitHub: @${data.login}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
+Project Title: ${data.name} (GitHub: @${data.login}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
 [![GitHub Avatar](${data.avatar_url})](${gitMainURL})
 1. My email address: ${data.email}
 2. Location: ${data.location}
@@ -131,27 +131,27 @@ Contributors
 
 async function renderNewFile() {
     try {
-        let filename = `generated-files/README-` + moment().format(`YYYYMMDDhhmmss`) + `.md`
+        let filename = `githubgen_files/README-` + moment().format(`YYYYMMDDhhmmss`) + `.md`
         let gitPhotoURL, gitEmail, gitMainURL
 
-        const answers = await askUser()             // waiting for inquirer prompt to gather all answers from user
+        const answers = await user()
 
         let userURL = `https://api.github.com/users/${answers.githubName}`
         let repoURL = `https://api.github.com/users/${answers.githubName}/repos?sort=created&direction=desc&per_page=100`
 
-        // waiting for an axios call to get GitHub user information before we continue
+        // wait for axios call for GitHub info
         await axios.get(userURL).then(res => {
 
             console.log(res.data)
-            gitPhotoURL = res.data.avatar_url       // saving profile avatar url to variable
-            gitEmail = res.data.email               // saving user's email to variable
-            gitMainURL = res.data.html_url          // saving user's github url to variable
+            gitEmail = res.data.email
+            gitURL = res.data.html_url
+            gitAvatar = res.data.avatar_url
         })
 
-        const readmeText = generateREADME(...answers, ...res.data)         // send answers obj to generateREADME function to parse 
-        await writeFileSync(filename, readmeText)                                 // create README.md file (timestamped) with README template
+        const readmeText = generateREADME(...answers, ...res.data)          
+        await writeFileSync(filename, readmeText)
         
-        console.log(`Thank you ~ File created (${filename}).`)
+        console.log(`File created: (${filename}).`)
 
     } catch (err) {
         console.log(err)
@@ -161,7 +161,7 @@ async function renderNewFile() {
 renderNewFile()
 
 module.exports = {
-    askUser: askUser,
+    user: user,
     readME: readME,
     questions:questions,
 
