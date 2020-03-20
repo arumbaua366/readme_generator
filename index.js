@@ -89,7 +89,7 @@ const user = () => {
 }
 
 const readME = (data) => {
-    console.log("data:", data)
+    console.log("data: ", data)
     if (data.email === undefined || data.email === null) {
         data.email = `[no email found]`
     }
@@ -137,7 +137,7 @@ async function renderNewFile() {
         const answers = await user()
 
         let userURL = `https://api.github.com/users/${answers.githubName}`
-        let repoURL = `https://api.github.com/users/${answers.githubName}/repos?sort=created&direction=desc&per_page=100`
+        // let repoURL = `https://api.github.com/users/${answers.githubName}/repos?sort=created&direction=desc&per_page=100`
 
         // wait for axios call for GitHub info
         await axios.get(userURL).then(res => {
@@ -148,7 +148,7 @@ async function renderNewFile() {
             gitAvatarURL = res.data.avatar_url
         })
 
-        const readmeText = readME(...answers, ...res.data)          
+        const readmeText = readME(answers, ...res.data)          
         await writeFileSync(filename, readmeText)
         
         console.log(`File created: (${filename}).`)
@@ -163,6 +163,6 @@ renderNewFile()
 module.exports = {
     user: user,
     readME: readME,
-    questions:questions,
+    questions: questions,
 
 }
