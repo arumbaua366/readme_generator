@@ -109,13 +109,13 @@ const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
         resp.license = `[Enter licenses used here]`
     }
 
-    let socialBadge = `https://img.shields.io/github/followers/${githubName}?style=social`
+    let socialBadge = `https://img.shields.io/github/followers/${resp.githubName}?style=social`
     return `# ${resp.title}
     
-Project Title: ${resp.name} (GitHub: @${githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
+Project Title: ${resp.name} (GitHub: @${resp.githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
 [![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
-1. My email address: ${gitEmail}
-2. Location: ${resp.location}
+* Email address: ${gitEmail}
+// 2. Location: ${resp.location}
 ### Description
 * ${resp.description}
 ### Installation
@@ -124,7 +124,7 @@ Project Title: ${resp.name} (GitHub: @${githubName}) [![User Followers](${social
 * ${resp.usage}
 ### License
 * ${resp.license}
-Contributors
+### Contributors
 * ${resp.name} and ${resp.contributing}
 `
 }
