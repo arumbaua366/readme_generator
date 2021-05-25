@@ -90,8 +90,8 @@ const askUser = () => {
 
 const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
     console.log("responses:", resp)
-    if (resp.email === undefined || resp.email === null) {
-        resp.email = `[no email found]`
+    if (gitEmail === undefined || gitEmail === null) {
+        gitEmail = `[no email found]`
     }
     if (resp.installation === undefined) {
         resp.installation = `[Enter installation information here]`
@@ -109,10 +109,10 @@ const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
         resp.license = `[Enter licenses used here]`
     }
 
-    let socialBadge = `https://img.shields.io/github/followers/${resp.login}?style=social`
+    let socialBadge = `https://img.shields.io/github/followers/${githubName}?style=social`
     return `# ${resp.title}
     
-Project Title: ${resp.name} (GitHub: @${resp.login}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
+Project Title: ${resp.name} (GitHub: @${githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
 [![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
 1. My email address: ${gitEmail}
 2. Location: ${resp.location}
