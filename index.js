@@ -12,10 +12,10 @@ const questions = [
         type: `input`,
         message: `What is your first and last name?`,
         validate: async input => {
-            if (input === null || input === `    ` || input.length < 4) {
-               return `You must enter your first and last name.`
+            if (input === null || input === ` ` || input === `  ` || input === `   ` || input.length < 3) {
+               return `You must enter a name (minimum 4 characters).`
             }
-            return true;
+            return true
          }
     },
     {
@@ -26,7 +26,7 @@ const questions = [
             if (input === null || input === ` ` || input === `  ` || input.length < 2) {
                return `You must enter at a GitHub username (minimum 2 characters).`
             }
-            return true;
+            return true
          }
     },
     {
@@ -84,74 +84,74 @@ const questions = [
         default: `N/A`,
     },
 ]
-const user = () => {
+const askUser = () => {
     return inquirer.prompt(questions)
 }
 
-const readME = (data) => {
-    console.log("data: ", data)
-    if (data.email === undefined || data.email === null) {
-        data.email = `[no email found]`
+const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
+    console.log("responses:", resp)
+    if (resp.email === undefined || resp.email === null) {
+        resp.email = `[no email found]`
     }
-    if (data.installation === undefined) {
-        data.installation = `[Enter installation information here]`
+    if (resp.installation === undefined) {
+        resp.installation = `[Enter installation information here]`
     }
-    if (data.description === undefined) {
-        data.description = `[Enter project description here]`
+    if (resp.description === undefined) {
+        resp.description = `[Enter project description here]`
     }
-    if (data.usage === undefined) {
-        data.usage = `[Enter how project is to be used here]`
+    if (resp.usage === undefined) {
+        resp.usage = `[Enter how project is to be used here]`
     }
-    if (data.contributing === undefined) {
-        data.contributing = `[Enter other contributors here]`
+    if (resp.contributing === undefined) {
+        resp.contributing = `[Enter other contributors here]`
     }
-    if (data.license === undefined) {
-        data.license = `[Enter licenses used here]`
+    if (resp.license === undefined) {
+        resp.license = `[Enter licenses used here]`
     }
 
-    let shieldsBadge = `https://img.shields.io/github/followers/${data.login}?style=social`
-    return `# ${data.title}
+    let socialBadge = `https://img.shields.io/github/followers/${resp.login}?style=social`
+    return `# ${resp.title}
     
-Project Title: ${data.name} 
-GitHub: @${data.login}) [![User Followers](${shieldsBadge})](${gitURL+`?tab=followers`})
-[![GitHub Avatar](${data.avatar_url})](${gitURL})
-1. My email address: ${data.email}
-2. Location: ${data.location}
+Project Title: ${resp.name} (GitHub: @${resp.login}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
+[![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
+1. My email address: ${gitEmail}
+2. Location: ${resp.location}
 ### Description
-* ${data.description}
+* ${resp.description}
 ### Installation
-* ${data.installation}
+* ${resp.installation}
 ### Usage
-* ${data.usage}
+* ${resp.usage}
 ### License
-* ${data.license}
+* ${resp.license}
 Contributors
-* ${data.name} and ${data.contributing}
+* ${resp.name} and ${resp.contributing}
 `
 }
 
 async function renderNewFile() {
     try {
         let filename = `githubgen_files/README-` + moment().format(`YYYYMMDDhhmmss`) + `.md`
+        let gitPhotoURL, gitEmail, gitMainURL
 
-        const answers = await user()
+        const answers = await askUser()             // waiting for inquirer prompt to gather all answers from user
 
         let userURL = `https://api.github.com/users/${answers.githubName}`
         // let repoURL = `https://api.github.com/users/${answers.githubName}/repos?sort=created&direction=desc&per_page=100`
 
-        // wait for axios call for GitHub info
+        // waiting for an axios call to get GitHub user information before we continue
         await axios.get(userURL).then(res => {
 
             console.log(res.data)
-            gitEmail = res.data.email
-            gitURL = res.data.html_url
-            gitAvatarURL = res.data.avatar_url
+            gitPhotoURL = res.data.avatar_url       // saving profile avatar url to variable
+            gitEmail = res.data.email               // saving user's email to variable
+            gitMainURL = res.data.html_url          // saving user's github url to variable
         })
 
-        const readmeText = readME(answers, ...res.data)          
-        await writeFileSync(filename, readmeText)
+        const readmeText = readME(answers, gitPhotoURL, gitEmail, gitMainURL)         // send answers obj to generateREADME function to parse 
+        await writeFileSync(filename, readmeText)                                 // create README.md file (timestamped) with README template
         
-        console.log(`File created: (${filename}).`)
+        console.log(`Thank you ~ File created (${filename}).`)
 
     } catch (err) {
         console.log(err)
@@ -161,8 +161,8 @@ async function renderNewFile() {
 renderNewFile()
 
 module.exports = {
-    user: user,
+    askUser: askUser,
     readME: readME,
-    questions: questions,
+    questions:questions,
 
 }
