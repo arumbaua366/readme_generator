@@ -78,9 +78,9 @@ const questions = [
         default: `N/A`,
     },
     {
-        name: `faq`,
+        name: `questions`,
         type: `input`,
-        message: `FAQs:`,
+        message: `What tests have you conducted to ensure the application is working correctly?`,
         default: `N/A`,
     },
 ]
@@ -90,8 +90,8 @@ const askUser = () => {
 
 const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
     console.log("responses:", resp)
-    if (resp.gitEmail === undefined || resp.gitEmail === null) {
-        resp.gitEmail = `[no email found]`
+    if (gitEmail === undefined || gitEmail === null) {
+        gitEmail = `[no email found]`
     }
     if (resp.installation === undefined) {
         resp.installation = `[Enter installation information here]`
@@ -114,12 +114,29 @@ const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
     
 Project Title: ${resp.name} (GitHub: @${resp.githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
 [![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
-* Email address: ${gitEmail}
+* Email address:(${gitEmail})
+
+### Table of Contents
+
+* [Installation](#installation)
+
+* [Usage](#usage)
+
+* [License](#license)
+
+* [Contributing](#contributing)
+
+* [Tests](#tests)
+
+* [Questions](#questions)
 
 ### Description
 * ${resp.description}
 ### Installation
-* ${resp.installation}
+* To install necessary dependencies, run the following command 
+\`\`\`
+${resp.installation}
+\`\`\`
 ### Usage
 * ${resp.usage}
 ### License
@@ -137,14 +154,13 @@ async function renderNewFile() {
         const answers = await askUser()             // waiting for inquirer prompt to gather all answers from user
 
         let userURL = `https://api.github.com/users/${answers.githubName}`
-        // let repoURL = `https://api.github.com/users/${answers.githubName}/repos?sort=created&direction=desc&per_page=100`
 
         // waiting for an axios call to get GitHub user information before we continue
         await axios.get(userURL).then(res => {
 
             console.log(res.data)
             gitPhotoURL = res.data.avatar_url       // saving profile avatar url to variable
-            gitEmail = res.data.email               // saving user's email to variable
+            gitEmail = res.data.emails_url          // saving user's email to variable
             gitMainURL = res.data.html_url          // saving user's github url to variable
         })
 
@@ -163,6 +179,6 @@ renderNewFile()
 module.exports = {
     askUser: askUser,
     readME: readME,
-    questions:questions,
+    questions: questions,
 
 }
