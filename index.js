@@ -42,12 +42,6 @@ const questions = [
         default: `N/A`,
     },
     {
-        name: `contents`,
-        type: `input`,
-        message: `Provide a table of contents.`,
-        default: `N/A`,
-    },
-    {
         name: `installation`,
         type: `input`,
         message: `How is your application installed?`,
@@ -73,12 +67,6 @@ const questions = [
     },
     {
         name: `tests`,
-        type: `input`,
-        message: `What tests have you conducted to ensure the application is working correctly?`,
-        default: `N/A`,
-    },
-    {
-        name: `questions`,
         type: `input`,
         message: `What tests have you conducted to ensure the application is working correctly?`,
         default: `N/A`,
@@ -111,38 +99,37 @@ const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
 
     let socialBadge = `https://img.shields.io/github/followers/${resp.githubName}?style=social`
     return `# ${resp.title}
-    
-Project Title: ${resp.name} (GitHub: @${resp.githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
+
+* Name: ${resp.name} 
+* GitHub: ${resp.githubName} 
+[![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
 [![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
 * Email address:(${gitEmail})
 
-### Table of Contents
+## Table of Contents
 
 * [Installation](#installation)
-
 * [Usage](#usage)
-
 * [License](#license)
-
 * [Contributing](#contributing)
-
 * [Tests](#tests)
-
 * [Questions](#questions)
 
-### Description
+## Description
 * ${resp.description}
-### Installation
-* To install necessary dependencies, run the following command 
+## Installation
+* To install necessary dependencies, run the following command: 
 \`\`\`
 ${resp.installation}
 \`\`\`
-### Usage
+## Usage
 * ${resp.usage}
-### License
+## License
 * ${resp.license}
-### Contributors
+## Contributors
 * ${resp.name} and ${resp.contributing}
+## Questions
+* If you have any questions, contact ${resp.githubName} at ${gitEmail}
 `
 }
 
@@ -160,7 +147,7 @@ async function renderNewFile() {
 
             console.log(res.data)
             gitPhotoURL = res.data.avatar_url       // saving profile avatar url to variable
-            gitEmail = res.data.emails_url          // saving user's email to variable
+            gitEmail = res.data.email               // saving user's email to variable
             gitMainURL = res.data.html_url          // saving user's github url to variable
         })
 
