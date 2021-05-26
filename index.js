@@ -90,8 +90,8 @@ const askUser = () => {
 
 const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
     console.log("responses:", resp)
-    if (gitEmail === undefined || gitEmail === null) {
-        gitEmail = `[no email found]`
+    if (resp.gitEmail === undefined || resp.gitEmail === null) {
+        resp.gitEmail = `[no email found]`
     }
     if (resp.installation === undefined) {
         resp.installation = `[Enter installation information here]`
@@ -115,7 +115,7 @@ const readME = (resp, gitPhotoURL, gitEmail, gitMainURL) => {
 Project Title: ${resp.name} (GitHub: @${resp.githubName}) [![User Followers](${socialBadge})](${gitMainURL+`?tab=followers`})
 [![GitHub Avatar](${gitPhotoURL})](${gitMainURL})
 * Email address: ${gitEmail}
-// 2. Location: ${resp.location}
+
 ### Description
 * ${resp.description}
 ### Installation
