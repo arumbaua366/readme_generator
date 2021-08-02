@@ -21,7 +21,10 @@
 npm install
 ```
 ## Usage
-* Invoke app by running node index.js
+* Invoke app by running 
+```
+node index.js
+````
 ## License
 * MIT
 ## Contributors
