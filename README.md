@@ -2,7 +2,7 @@
 
 * Name: Andrea Rumbaua 
 * GitHub: arumbaua366 
-[![GitHub Avatar](https://avatars.githubusercontent.com/u/56378858?v=4)](https://github.com/arumbaua366)
+* [![GitHub Avatar](https://avatars.githubusercontent.com/u/56378858?v=4)](https://github.com/arumbaua366)
 * Email address:([andyrum366@gmail.com])
 
 ## Table of Contents
