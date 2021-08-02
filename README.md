@@ -2,7 +2,6 @@
 
 * Name: Andrea Rumbaua 
 * GitHub: arumbaua366 
-[![User Followers](https://img.shields.io/github/languages/top/arumbaua366?style=flat&logo=appveyor)](https://github.com/arumbaua366?tab=followers)
 [![GitHub Avatar](https://avatars.githubusercontent.com/u/56378858?v=4)](https://github.com/arumbaua366)
 * Email address:([andyrum366@gmail.com])
 
